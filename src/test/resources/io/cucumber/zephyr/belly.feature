@@ -1,4 +1,4 @@
-@JIRA_XYZ-1 @JIRA_XYZ-1 @smoke-test
+@JIRA_XYZ-1 @JIRA_XYZ-2 @JIRA_XYZ-2 @smoke-test
 Feature: Belly
 
   Scenario: a few cukes

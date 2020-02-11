@@ -1,11 +1,10 @@
-package io.cucumber.skeleton;
+package io.cucumber.zephyr;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"com.zephyr.cucumber.ZephyrXMLFormatter:target/zephyr.xml"})
+@CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
 public class RunCucumberTest {
 }

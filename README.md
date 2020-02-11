@@ -1,12 +1,13 @@
 # cucumber-jvm-zephyr-xml
 
-This Cucumber-JVM plugin generates JUnit XML with some modifications
-to support Zephyr.
+This Cucumber-JVM plugin generates JUnit XML with modifications to support Zephyr.
+
+Any tags in the feature file starting with `@JIRA_` will be outputted to the XML.
 
 For example:
 
 ```gherkin
-@XYZ-1 @XYZ-1 @smoke-test
+@JIRA_XYZ-1 @JIRA_XYZ-1 @smoke-test
 Feature: something
 ```
 
@@ -19,25 +20,25 @@ This will output the following snippet in the generated XML
 </requirements>
 ```
 
-The plugin needs to know what tags to include/exclude from the output.
-
-TODO - some ideas:
-- Include tags matching a particular regexp, e.g. `/[A-Z]+-\d+/`
-  - How to specify this regexp?
+The plugin will replace `@JIRA_` with `ALTID_` in the generated XML.
   
 ## Usage:
 
-Add the following to your pom.xml:
+Add the dependency to your pom.xml:
 
 ```xml
-TODO
+<dependency>
+    <groupId>io.cucumber</groupId>
+    <artifactId>zephyr-xml-formatter</artifactId>
+    <version>4.2.0</version>
+</dependency>
 ```
 
 Add the following to your JUnit class:
 
 ```java
 @RunWith(Cucumber.class)
-@Cucumber.Options(plugin = "com.smartbear.zephyr.cucumber.ZephyrXmlFormatter")
+@CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
 ```
 
 That's it!

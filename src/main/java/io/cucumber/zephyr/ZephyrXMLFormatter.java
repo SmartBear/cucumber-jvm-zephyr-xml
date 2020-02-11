@@ -1,4 +1,4 @@
-package com.zephyr.cucumber;
+package io.cucumber.zephyr;
 
 import cucumber.api.PickleStepTestStep;
 import cucumber.api.Result;
@@ -19,6 +19,7 @@ import gherkin.pickles.PickleTag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -48,13 +49,13 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     private TestCase testCase;
     private Element root;
 
-    private EventHandler<TestSourceRead> sourceReadHandler= new EventHandler<TestSourceRead>() {
+    private EventHandler<TestSourceRead> sourceReadHandler = new EventHandler<TestSourceRead>() {
         @Override
         public void receive(TestSourceRead event) {
             handleTestSourceRead(event);
         }
     };
-    private EventHandler<TestCaseStarted> caseStartedHandler= new EventHandler<TestCaseStarted>() {
+    private EventHandler<TestCaseStarted> caseStartedHandler = new EventHandler<TestCaseStarted>() {
         @Override
         public void receive(TestCaseStarted event) {
             handleTestCaseStarted(event);
@@ -119,7 +120,6 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         rootElement.appendChild(root);
 
 
-
         increaseAttributeValue(rootElement, "tests");
     }
 
@@ -137,7 +137,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
                 .stream()
                 .map(PickleTag::getName)
                 .filter(tagName -> tagName.startsWith("@JIRA_"))
-                .map(tagName -> "ALTID_" + tagName.substring(tagName.indexOf("_")+1))
+                .map(tagName -> tagName.replaceAll("^@JIRA_", "ALTID_"))
                 .collect(Collectors.toList());
 
         if (testCase.steps.isEmpty()) {
@@ -168,14 +168,14 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
 
     private String sumTimes(NodeList testCaseNodes) {
         double totalDurationSecondsForAllTimes = 0.0d;
-        for( int i = 0; i < testCaseNodes.getLength(); i++ ) {
+        for (int i = 0; i < testCaseNodes.getLength(); i++) {
             try {
                 double testCaseTime =
                         Double.parseDouble(testCaseNodes.item(i).getAttributes().getNamedItem("time").getNodeValue());
                 totalDurationSecondsForAllTimes += testCaseTime;
-            } catch ( NumberFormatException e ) {
+            } catch (NumberFormatException e) {
                 throw new CucumberException(e);
-            } catch ( NullPointerException e ) {
+            } catch (NullPointerException e) {
                 throw new CucumberException(e);
             }
         }
@@ -262,8 +262,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             } else if (result.is(Result.Type.PENDING) || result.is(Result.Type.UNDEFINED)) {
                 if (treatConditionallySkippedAsFailure) {
                     child = createElementWithMessage(doc, sb, "failure", "The scenario has pending or undefined step(s)");
-                }
-                else {
+                } else {
                     child = createElement(doc, sb, "skipped");
                 }
             } else if (result.is(Result.Type.SKIPPED) && result.getError() != null) {

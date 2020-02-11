@@ -1,4 +1,4 @@
-package com.zephyr.cucumber;
+package io.cucumber.zephyr;
 
 import cucumber.api.event.TestSourceRead;
 import gherkin.AstBuilder;

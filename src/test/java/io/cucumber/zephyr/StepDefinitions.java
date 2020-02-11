@@ -1,5 +1,4 @@
-package io.cucumber.skeleton;
-
+package io.cucumber.zephyr;
 
 import cucumber.api.java.en.Given;
 
