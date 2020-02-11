@@ -15,6 +15,7 @@ import cucumber.runtime.CucumberException;
 import cucumber.runtime.Utils;
 import cucumber.runtime.io.URLOutputStream;
 import cucumber.runtime.io.UTF8OutputStreamWriter;
+import gherkin.pickles.PickleTag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,6 +38,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     private final Writer out;
@@ -115,6 +117,10 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         root = testCase.createElement(doc);
         testCase.writeElement(doc, root);
         rootElement.appendChild(root);
+
+        List<PickleTag> tags = event.testCase.getTags();
+        List<String> tagNames = tags.stream().map(PickleTag::getName).collect(Collectors.toList());
+        System.out.println("tagNames = " + tagNames);
 
         increaseAttributeValue(rootElement, "tests");
     }
@@ -228,6 +234,13 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             tc.setAttribute("time", calculateTotalDurationString(result));
 
             StringBuilder sb = new StringBuilder();
+
+            Element requirementsElement = doc.createElement("requirements");
+            tc.appendChild(requirementsElement);
+
+            Element requirementElement = doc.createElement("requirement");
+            requirementsElement.appendChild(requirementElement);
+
             addStepAndResultListing(sb);
             Element child;
             if (result.is(Result.Type.FAILED)) {

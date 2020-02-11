@@ -1,3 +1,4 @@
+@XYZ-1 @XYZ-1 @smoke-test
 Feature: Belly
 
   Scenario: a few cukes
