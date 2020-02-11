@@ -43,3 +43,11 @@ Add the following to your JUnit class:
 
 That's it!
 
+## Release process
+
+Find the two environment variables in 1Password
+
+    export SONATYPE_PASSWORD=...
+    export GPG_SIGNING_KEY_PASSPHRASE=...
+	mvn deploy -Psign-source-javadoc --settings settings.xml -DskipTests=true
+
