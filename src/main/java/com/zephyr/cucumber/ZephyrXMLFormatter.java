@@ -118,9 +118,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         testCase.writeElement(doc, root);
         rootElement.appendChild(root);
 
-        List<PickleTag> tags = event.testCase.getTags();
-        List<String> tagNames = tags.stream().map(PickleTag::getName).collect(Collectors.toList());
-        System.out.println("tagNames = " + tagNames);
+
 
         increaseAttributeValue(rootElement, "tests");
     }
@@ -133,10 +131,18 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     }
 
     private void handleTestCaseFinished(TestCaseFinished event) {
+
+        List<PickleTag> tags = event.testCase.getTags();
+        List<String> requirementIds = tags
+                .stream()
+                .map(PickleTag::getName)
+                .map(tagName -> "ALTID_" + tagName.substring(1))
+                .collect(Collectors.toList());
+
         if (testCase.steps.isEmpty()) {
             testCase.handleEmptyTestCase(doc, root, event.result);
         } else {
-            testCase.addTestCaseElement(doc, root, event.result);
+            testCase.addTestCaseElement(doc, root, event.result, requirementIds);
         }
     }
 
@@ -230,7 +236,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             }
         }
 
-        public void addTestCaseElement(Document doc, Element tc, Result result) {
+        public void addTestCaseElement(Document doc, Element tc, Result result, List<String> requirementIds) {
             tc.setAttribute("time", calculateTotalDurationString(result));
 
             StringBuilder sb = new StringBuilder();
@@ -238,8 +244,11 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             Element requirementsElement = doc.createElement("requirements");
             tc.appendChild(requirementsElement);
 
-            Element requirementElement = doc.createElement("requirement");
-            requirementsElement.appendChild(requirementElement);
+            requirementIds.forEach(requirementId -> {
+                Element requirementElement = doc.createElement("requirement");
+                requirementsElement.appendChild(requirementElement);
+                requirementElement.setTextContent(requirementId);
+            });
 
             addStepAndResultListing(sb);
             Element child;
