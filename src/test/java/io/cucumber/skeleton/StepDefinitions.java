@@ -1,6 +1,7 @@
 package io.cucumber.skeleton;
 
-import io.cucumber.java.en.Given;
+
+import cucumber.api.java.en.Given;
 
 public class StepDefinitions {
     @Given("I have {int} cukes in my belly")
