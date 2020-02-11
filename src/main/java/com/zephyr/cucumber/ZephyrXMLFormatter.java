@@ -136,7 +136,8 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         List<String> requirementIds = tags
                 .stream()
                 .map(PickleTag::getName)
-                .map(tagName -> "ALTID_" + tagName.substring(1))
+                .filter(tagName -> tagName.startsWith("@JIRA_"))
+                .map(tagName -> "ALTID_" + tagName.substring(tagName.indexOf("_")+1))
                 .collect(Collectors.toList());
 
         if (testCase.steps.isEmpty()) {
