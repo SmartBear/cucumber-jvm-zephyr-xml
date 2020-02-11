@@ -1,4 +1,4 @@
-package com.zephyr.cucumber.;
+package com.zephyr.cucumber;
 
 import cucumber.api.PickleStepTestStep;
 import cucumber.api.Result;
@@ -18,8 +18,6 @@ import cucumber.runtime.io.UTF8OutputStreamWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -40,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-final class JUnitFormatter implements EventListener, StrictAware {
+public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     private final Writer out;
     private final Document doc;
     private final Element rootElement;
@@ -79,7 +77,7 @@ final class JUnitFormatter implements EventListener, StrictAware {
         }
     };
 
-    public JUnitFormatter(URL out) throws IOException {
+    public ZephyrXMLFormatter(URL out) throws IOException {
         this.out = new UTF8OutputStreamWriter(new URLOutputStream(out));
         TestCase.treatConditionallySkippedAsFailure = false;
         TestCase.currentFeatureFile = null;
@@ -139,7 +137,7 @@ final class JUnitFormatter implements EventListener, StrictAware {
     private void finishReport() {
         try {
             // set up a transformer
-            rootElement.setAttribute("name", JUnitFormatter.class.getName());
+            rootElement.setAttribute("name", getClass().getName());
             rootElement.setAttribute("failures", String.valueOf(rootElement.getElementsByTagName("failure").getLength()));
             rootElement.setAttribute("skipped", String.valueOf(rootElement.getElementsByTagName("skipped").getLength()));
             rootElement.setAttribute("time", sumTimes(rootElement.getElementsByTagName("testcase")));

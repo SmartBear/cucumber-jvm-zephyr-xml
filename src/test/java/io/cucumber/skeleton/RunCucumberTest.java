@@ -6,6 +6,6 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty"})
+@CucumberOptions(plugin = {"com.zephyr.cucumber.ZephyrXMLFormatter:target/zephyr.xml"})
 public class RunCucumberTest {
 }
