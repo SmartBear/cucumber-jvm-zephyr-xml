@@ -50,4 +50,7 @@ Find the two environment variables in 1Password
     export SONATYPE_PASSWORD=...
     export GPG_SIGNING_KEY_PASSPHRASE=...
 	mvn deploy -Psign-source-javadoc --settings settings.xml -DskipTests=true
+	# Find X.Y.Z in pom.xml
+	git tag vX.Y.Z
+	git push --tags
 
