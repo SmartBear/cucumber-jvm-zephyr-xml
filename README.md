@@ -15,12 +15,12 @@ This will output the following snippet in the generated XML
 
 ```xml
 <requirements>
-  <requirement>ALTID_XYZ-1</requirement>
-  <requirement>ALTID_XYZ-2</requirement>
+  <requirement>AltID_XYZ-1</requirement>
+  <requirement>AltID_XYZ-2</requirement>
 </requirements>
 ```
 
-The plugin will replace `@JIRA_` with `ALTID_` in the generated XML.
+The plugin will replace `@JIRA_` with `AltID_` in the generated XML.
   
 ## Usage:
 
