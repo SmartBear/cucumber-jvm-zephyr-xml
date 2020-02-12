@@ -8,7 +8,7 @@
         <version>2.0.2</version>
     </parent>
     <artifactId>zephyr-xml-formatter</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.0.1</version>
     <packaging>jar</packaging>
     <name>Zephyr XML formatter for Cucumber</name>
 
