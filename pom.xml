@@ -27,6 +27,7 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-core</artifactId>
             <version>${cucumber.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
