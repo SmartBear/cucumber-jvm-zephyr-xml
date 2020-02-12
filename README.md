@@ -41,9 +41,14 @@ Add the following to your JUnit class:
 @CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
 ```
 
-That's it!
+## Compatibility
+
+This plugin will only work with Cucumber-JVM 4.2.X. If you require support for version 5.x,
+please open an issue.
 
 ## Release process
+
+Update `CHANGELOG.md` to reflect the changes since the previous release.
 
 Find the two environment variables in 1Password
 
