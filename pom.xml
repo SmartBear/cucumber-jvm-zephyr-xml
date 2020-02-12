@@ -8,7 +8,7 @@
         <version>2.0.2</version>
     </parent>
     <artifactId>zephyr-xml-formatter</artifactId>
-    <--
+    <!--
     The MAJOR.MINOR.PATCH version should be the same as cucumber.version below.
     Use a 4th digit to track additional patch versions for this plugin.
     -->
