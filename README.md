@@ -64,6 +64,10 @@ Add the following to your JUnit class:
 @CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
 ```
 
+## Maintenance
+
+This plugin is maintained by the SmartBear Zephyr team.
+
 ## Release process
 
 Update `CHANGELOG.md` to reflect the changes since the previous release.
