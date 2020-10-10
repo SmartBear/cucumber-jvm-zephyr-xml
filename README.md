@@ -1,6 +1,27 @@
 # cucumber-jvm-zephyr-xml
 
-This Cucumber-JVM plugin generates JUnit XML with modifications to support Zephyr.
+This Cucumber-JVM plugin generates JUnit XML with proprietary modifications to support Zephyr.
+
+## Added features
+
+**Warning**: This plugin outputs additional XML elements that are **incompatible**
+with widely used XML schemas that validate the generated XML:
+
+* [jenkins-junit.xsd](https://github.com/junit-team/junit5/blob/main/platform-tests/src/test/resources/jenkins-junit.xsd)
+* [various other schemas](https://stackoverflow.com/questions/442556/spec-for-junit-xml-output)
+
+Adding these extra XML elements in the official `JUnitXmlFormatter` would cause
+validation errors for all users using one of the validation schemas above.
+
+For this reason this plugin is a fork of the `JUnitXmlFormatter`. It has been forked from [Cucumber-JVM 4.2.6](https://github.com/cucumber/cucumber-jvm/blob/main/CHANGELOG.md#426-2019-03-06).
+
+**Warning**: This plugin has not been tested against later versions of Cucumber-JVM
+and is **unlikely** to be compatible with versions `5.x` and `6.x`.
+
+Until this is fixed, users of this plugin will **not** be able to use recent versions
+of Cucumber-JVM.
+
+### Custom `<requirements>` element
 
 Any tags in the feature file starting with `@JIRA_` will be outputted to the XML.
 
@@ -21,7 +42,7 @@ This will output the following snippet in the generated XML
 ```
 
 The plugin will replace `@JIRA_` with `AltID_` in the generated XML.
-  
+
 ## Usage:
 
 Add the dependency to your pom.xml:
@@ -41,21 +62,15 @@ Add the following to your JUnit class:
 @CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
 ```
 
-## Compatibility
-
-This plugin will only work with Cucumber-JVM 4.2.X. If you require support for version 5.x,
-please open an issue.
-
 ## Release process
 
 Update `CHANGELOG.md` to reflect the changes since the previous release.
 
-Find the two environment variables in 1Password
+Contact somebody fro the Cucumber Open core team to get access to secrets.
 
     export SONATYPE_PASSWORD=...
     export GPG_SIGNING_KEY_PASSPHRASE=...
-	mvn clean deploy -Psign-source-javadoc --settings settings.xml -DskipTests=true
-	# Find X.Y.Z in pom.xml
-	git tag vX.Y.Z
-	git push --tags
-
+    mvn clean deploy -Psign-source-javadoc --settings settings.xml -DskipTests=true
+    # Find X.Y.Z in pom.xml
+    git tag vX.Y.Z
+    git push --tags
