@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/SmartBear/cucumber-jvm-zephyr-xml/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/SmartBear/cucumber-jvm-zephyr-xml/actions?query=workflow%3A%22Java+CI+with+Maven%22)
+
 # cucumber-jvm-zephyr-xml
 
 This Cucumber-JVM plugin generates JUnit XML with proprietary modifications to support Zephyr.
