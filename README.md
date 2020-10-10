@@ -4,8 +4,6 @@
 
 This Cucumber-JVM plugin generates JUnit XML with proprietary modifications to support Zephyr.
 
-## Added features
-
 **Warning**: This plugin outputs additional XML elements that are **incompatible**
 with widely used XML schemas that validate the generated XML:
 
@@ -23,7 +21,7 @@ and is **unlikely** to be compatible with versions `5.x` and `6.x`.
 Until this is fixed, users of this plugin will **not** be able to use recent versions
 of Cucumber-JVM.
 
-### Custom `<requirements>` element
+## Custom `<requirements>` element
 
 Any tags in the feature file starting with `@JIRA_` will be outputted to the XML.
 
