@@ -139,6 +139,16 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
                 .filter(tagName -> tagName.startsWith("@JIRA_"))
                 .map(tagName -> tagName.replaceAll("^@JIRA_", "AltID_"))
                 .collect(Collectors.toList());
+        
+        List<String> customTags = tags
+                .stream()
+                .map(PickleTag::getName)
+                .filter(tagName -> !tagName.startsWith("@JIRA_"))
+                .map(tagName -> tagName.replaceAll("^@", ""))
+                .collect(Collectors.toList());
+
+        testCase.addListToElement(doc, root, "requirements", "requirement", requirementIds);
+        testCase.addListToElement(doc, root, "tags", "tag", customTags);
 
         if (testCase.steps.isEmpty()) {
             testCase.handleEmptyTestCase(doc, root, event.result);
@@ -242,15 +252,6 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
 
             StringBuilder sb = new StringBuilder();
 
-            Element requirementsElement = doc.createElement("requirements");
-            tc.appendChild(requirementsElement);
-
-            requirementIds.forEach(requirementId -> {
-                Element requirementElement = doc.createElement("requirement");
-                requirementsElement.appendChild(requirementElement);
-                requirementElement.setTextContent(requirementId);
-            });
-
             addStepAndResultListing(sb);
             Element child;
             if (result.is(Result.Type.FAILED)) {
@@ -283,7 +284,18 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
 
             tc.appendChild(child);
         }
+        
+        public void addListToElement(Document doc, Element tc, String parentElementName, String childElementName, List<String> values) {
+            Element parentElement = doc.createElement(parentElementName);
+            tc.appendChild(parentElement);
 
+            values.forEach(value -> {
+                Element childElement = doc.createElement(childElementName);
+                parentElement.appendChild(childElement);
+                childElement.setTextContent(value.toString());
+            });
+        }
+        
         private String calculateTotalDurationString(Result result) {
             return NUMBER_FORMAT.format(((double) result.getDuration()) / 1000000000);
         }
