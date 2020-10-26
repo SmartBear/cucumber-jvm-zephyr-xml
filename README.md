@@ -45,7 +45,7 @@ The plugin will replace `@JIRA_` with `AltID_` in the generated XML.
 
 ## Using `<tags>` element
 
-`@` tags in the feature file which are not recognised as requirements (see above), will be inserted into the XML results file as tags to be attached to the Testcase in Zephyr.
+`@` tags in the feature file which are not recognised as requirements (see above), will be inserted into the XML results file as tag nodes.
 
 For example:
 
@@ -70,14 +70,6 @@ Here is an example of a multiple tags in the XML file:
 <tag>BVT2</tag>
 </tags>
 ```
-
-In conjection with having this data in the XML file, we need to ensure the custom parser is able to read the tag. 
-
-Sample line which we should use in the template to add tags 
-```xml
-\"tag\":\"${group_concat(testsuite.testcase.tags,tag,' ')}\"}
-```
-(we've already done this for the Cucumber parser in Vortex, but not the other OOTB parsers or any that you may have customised). 
 
 ## Usage:
 
