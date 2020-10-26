@@ -58,12 +58,12 @@ This will collect the first two tags as requirements and the last `@` tag will b
 
 Here is an example of a single tag in the XML file:
 ```xml
-<tags>                                    ---//  tags: parent element
+<tags>                          ---//  tags: parent element
 <tag>Feature1</tag>             ---// tag : child element 
 </tags>  
 ```
 
-Here is an example of a multiple tags in the XML file:
+Here is an example of multiple tags in the XML file:
 ```xml
 <tags>
 <tag>BVT1</tag>
