@@ -43,6 +43,34 @@ This will output the following snippet in the generated XML
 
 The plugin will replace `@JIRA_` with `AltID_` in the generated XML.
 
+## Using `<tags>` element
+
+`@` tags in the feature file which are not recognised as requirements (see above), will be inserted into the XML results file as tag nodes.
+
+For example:
+
+```gherkin
+@JIRA_XYZ-1 @JIRA_XYZ-1 @smoke-test
+Feature: something
+```
+
+This will collect the first two tags as requirements and the last `@` tag will be a tag for the zephyr tescase. 
+
+Here is an example of a single tag in the XML file:
+```xml
+<tags>                          ---//  tags: parent element
+<tag>Feature1</tag>             ---// tag : child element 
+</tags>  
+```
+
+Here is an example of multiple tags in the XML file:
+```xml
+<tags>
+<tag>BVT1</tag>
+<tag>BVT2</tag>
+</tags>
+```
+
 ## Usage:
 
 Add the dependency to your pom.xml:
