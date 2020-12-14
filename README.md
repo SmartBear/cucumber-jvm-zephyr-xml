@@ -79,7 +79,7 @@ Add the dependency to your pom.xml:
 <dependency>
     <groupId>io.cucumber</groupId>
     <artifactId>zephyr-xml-formatter</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.0.2</version>
 </dependency>
 ```
 
