@@ -96,7 +96,9 @@ This plugin is maintained by the SmartBear Zephyr team.
 
 ## Release process
 
-Update `CHANGELOG.md` to reflect the changes since the previous release.
+* Update the version number in `pom.xml`. 
+* Update `CHANGELOG.md` to reflect the changes since the previous release.
+* Commit your files.
 
 Contact somebody fro the Cucumber Open core team to get access to secrets.
 
@@ -106,3 +108,4 @@ Contact somebody fro the Cucumber Open core team to get access to secrets.
     # Find X.Y.Z in pom.xml
     git tag vX.Y.Z
     git push --tags
+    git push
