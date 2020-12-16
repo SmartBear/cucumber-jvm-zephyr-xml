@@ -11,7 +11,7 @@ default:
 
 .release-in-docker:
 	[ -f '/home/cukebot/import-gpg-key.sh' ] && /home/cukebot/import-gpg-key.sh
-	mvn --batch-mode release:clean release:prepare -DautoVersionSubmodules=true -Darguments="-DskipTests=true -DskipITs=true -Darchetype.test.skip=true"
+	mvn --batch-mode release:clean release:prepare
 	git checkout "v$(NEW_VERSION)"
 	mvn deploy -Psign-source-javadoc -DskipTests=true -DskipITs=true -Darchetype.test.skip=true
 	git checkout $(CURRENT_BRANCH)
