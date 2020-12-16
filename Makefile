@@ -9,7 +9,7 @@ default:
 	@echo "NEW_VERSION: $(NEW_VERSION)"
 	@echo "CURRENT_BRANCH: $(CURRENT_BRANCH)"
 
-.release-in-docker: default update-changelog .commit-and-push-changelog
+.release-in-docker:
 	[ -f '/home/cukebot/import-gpg-key.sh' ] && /home/cukebot/import-gpg-key.sh
 	mvn --batch-mode release:clean release:prepare -DautoVersionSubmodules=true -Darguments="-DskipTests=true -DskipITs=true -Darchetype.test.skip=true"
 	git checkout "v$(NEW_VERSION)"
@@ -19,7 +19,7 @@ default:
 .PHONY: .release-in-docker
 
 release:
-	[ -d '../secrets' ]  || git clone keybase://team/cucumberbdd/secrets ../secrets
+	[ -d '../secrets' ] || git clone keybase://team/cucumberbdd/secrets ../secrets
 	git -C ../secrets pull
 	../secrets/update_permissions
 	docker pull cucumber/cucumber-build:latest
