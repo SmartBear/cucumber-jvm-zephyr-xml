@@ -4,7 +4,10 @@ NEW_VERSION = $(subst -SNAPSHOT,,$(VERSION))
 CURRENT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 default:
-	echo "Run `make release` to release to maven central"
+	@echo "Run make release to release to maven central"
+	@echo "VERSION: $(VERSION)"
+	@echo "NEW_VERSION: $(NEW_VERSION)"
+	@echo "CURRENT_BRANCH: $(CURRENT_BRANCH)"
 
 .release-in-docker: default update-changelog .commit-and-push-changelog
 	[ -f '/home/cukebot/import-gpg-key.sh' ] && /home/cukebot/import-gpg-key.sh
