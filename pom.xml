@@ -22,6 +22,12 @@
         <cucumber.version>4.2.0</cucumber.version>
     </properties>
 
+    <scm>
+         <connection>scm:git:git://github.com/SmartBear/cucumber-jvm-zephyr-xml.git</connection>
+         <developerConnection>scm:git:git@github.com:SmartBear/cucumber-jvm-zephyr-xml.git</developerConnection>
+         <url>git://github.com/SmartBear/cucumber-jvm-zephyr-xml.git</url>
+     </scm>
+
     <dependencies>
         <dependency>
             <groupId>io.cucumber</groupId>
