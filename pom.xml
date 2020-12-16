@@ -5,25 +5,22 @@
     <parent>
         <groupId>io.cucumber</groupId>
         <artifactId>cucumber-parent</artifactId>
-        <version>2.0.2</version>
+        <version>2.1.1</version>
     </parent>
     <artifactId>zephyr-xml-formatter</artifactId>
     <!--
     The MAJOR.MINOR.PATCH version should be the same as cucumber.version below.
     Use a 4th digit to track additional patch versions for this plugin.
     -->
-    <version>4.2.0.1</version>
+    <version>4.2.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Zephyr XML formatter for Cucumber</name>
 
     <properties>
         <project.Automatic-Module-Name>io.cucumber.zephyr</project.Automatic-Module-Name>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <junit.version>4.13</junit.version>
         <cucumber.version>4.2.0</cucumber.version>
-        <maven.compiler.version>3.8.1</maven.compiler.version>
-        <maven.surefire.version>2.22.1</maven.surefire.version>
     </properties>
 
     <dependencies>
@@ -56,24 +53,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.version}</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.version}</version>
-            </plugin>
-        </plugins>
-    </build>
 </project>
