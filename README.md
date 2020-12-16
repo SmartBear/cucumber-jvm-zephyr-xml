@@ -54,12 +54,12 @@ For example:
 Feature: something
 ```
 
-This will collect the first two tags as requirements and the last `@` tag will be a tag for the zephyr tescase. 
+This will collect the first two tags as requirements and the last `@` tag will be a tag for the zephyr tescase.
 
 Here is an example of a single tag in the XML file:
 ```xml
 <tags>                          ---//  tags: parent element
-<tag>Feature1</tag>             ---// tag : child element 
+<tag>Feature1</tag>             ---// tag : child element
 </tags>  
 ```
 
@@ -96,16 +96,13 @@ This plugin is maintained by the SmartBear Zephyr team.
 
 ## Release process
 
-* Update the version number in `pom.xml`. 
+* Update the version number in `pom.xml`.
 * Update `CHANGELOG.md` to reflect the changes since the previous release.
 * Commit your files.
 
 Contact somebody fro the Cucumber Open core team to get access to secrets.
 
-    export SONATYPE_PASSWORD=...
-    export GPG_SIGNING_KEY_PASSPHRASE=...
-    mvn clean deploy -Psign-source-javadoc --settings settings.xml -DskipTests=true
-    # Find X.Y.Z in pom.xml
-    git tag vX.Y.Z
-    git push --tags
-    git push
+    make docker-run-with-secrets
+    make release
+
+This should tag the git repository and upload artefacts to Maven Central.

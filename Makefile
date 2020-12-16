@@ -4,21 +4,13 @@ NEW_VERSION = $(subst -SNAPSHOT,,$(VERSION))
 CURRENT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 default:
-	@echo "Run make release to release to maven central"
+	@echo "Please read README.md for details about how to release"
 	@echo "VERSION: $(VERSION)"
 	@echo "NEW_VERSION: $(NEW_VERSION)"
 	@echo "CURRENT_BRANCH: $(CURRENT_BRANCH)"
+.PHONY: default
 
-.release-in-docker:
-	[ -f '/home/cukebot/import-gpg-key.sh' ] && /home/cukebot/import-gpg-key.sh
-	mvn --batch-mode release:clean release:prepare
-	git checkout "v$(NEW_VERSION)"
-	mvn deploy -Psign-source-javadoc -DskipTests=true -DskipITs=true -Darchetype.test.skip=true
-	git checkout $(CURRENT_BRANCH)
-	git fetch
-.PHONY: .release-in-docker
-
-release:
+docker-run-with-secrets:
 	[ -d '../secrets' ] || git clone keybase://team/cucumberbdd/secrets ../secrets
 	git -C ../secrets pull
 	../secrets/update_permissions
@@ -34,5 +26,14 @@ release:
 	  --user 1000 \
 	  --rm \
 	  -it cucumber/cucumber-build:latest \
-	  make .release-in-docker
+	  bash
+.PHONY: docker-run-with-secrets
+
+release:
+	[ -f '/home/cukebot/import-gpg-key.sh' ] && /home/cukebot/import-gpg-key.sh
+	mvn --batch-mode release:clean release:prepare
+	git checkout "v$(NEW_VERSION)"
+	mvn deploy -Psign-source-javadoc -DskipTests=true -DskipITs=true -Darchetype.test.skip=true
+	git checkout $(CURRENT_BRANCH)
+	git fetch
 .PHONY: release
