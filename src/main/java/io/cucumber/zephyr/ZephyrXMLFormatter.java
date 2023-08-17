@@ -1,21 +1,9 @@
 package io.cucumber.zephyr;
 
-import cucumber.api.PickleStepTestStep;
-import cucumber.api.Result;
-import cucumber.api.event.EventHandler;
-import cucumber.api.event.EventListener;
-import cucumber.api.event.EventPublisher;
-import cucumber.api.event.TestCaseFinished;
-import cucumber.api.event.TestCaseStarted;
-import cucumber.api.event.TestRunFinished;
-import cucumber.api.event.TestSourceRead;
-import cucumber.api.event.TestStepFinished;
-import cucumber.api.formatter.StrictAware;
-import cucumber.runtime.CucumberException;
-import cucumber.runtime.Utils;
-import cucumber.runtime.io.URLOutputStream;
-import cucumber.runtime.io.UTF8OutputStreamWriter;
-import gherkin.pickles.PickleTag;
+import java.io.OutputStreamWriter;
+import io.cucumber.core.exception.CucumberException;
+import io.cucumber.plugin.EventListener;
+import io.cucumber.plugin.event.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,7 +29,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public final class ZephyrXMLFormatter implements EventListener, StrictAware {
+import static java.util.Locale.ROOT;
+
+public final class ZephyrXMLFormatter implements EventListener {
     private final Writer out;
     private final Document doc;
     private final Element rootElement;
@@ -81,8 +71,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     };
 
     public ZephyrXMLFormatter(URL out) throws IOException {
-        this.out = new UTF8OutputStreamWriter(new URLOutputStream(out));
-        TestCase.treatConditionallySkippedAsFailure = false;
+        this.out = new OutputStreamWriter(new URLOutputStream(out));
         TestCase.currentFeatureFile = null;
         TestCase.previousTestCaseName = "";
         TestCase.exampleNumber = 1;
@@ -105,44 +94,41 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
     }
 
     private void handleTestSourceRead(TestSourceRead event) {
-        TestCase.testSources.addTestSourceReadEvent(event.uri, event);
+        TestCase.testSources.addTestSourceReadEvent(String.valueOf(event.getUri()), event);
     }
 
     private void handleTestCaseStarted(TestCaseStarted event) {
-        if (TestCase.currentFeatureFile == null || !TestCase.currentFeatureFile.equals(event.testCase.getUri())) {
-            TestCase.currentFeatureFile = event.testCase.getUri();
+        if (TestCase.currentFeatureFile == null || !TestCase.currentFeatureFile.equals(event.getTestCase().getUri())) {
+            TestCase.currentFeatureFile = String.valueOf(event.getTestCase().getUri());
             TestCase.previousTestCaseName = "";
             TestCase.exampleNumber = 1;
         }
-        testCase = new TestCase(event.testCase);
+        testCase = new TestCase(event.getTestCase());
         root = testCase.createElement(doc);
         testCase.writeElement(doc, root);
         rootElement.appendChild(root);
-
 
         increaseAttributeValue(rootElement, "tests");
     }
 
     private void handleTestStepFinished(TestStepFinished event) {
-        if (event.testStep instanceof PickleStepTestStep) {
-            testCase.steps.add((PickleStepTestStep) event.testStep);
-            testCase.results.add(event.result);
+        if (event.getTestStep() instanceof PickleStepTestStep) {
+            testCase.steps.add((PickleStepTestStep) event.getTestStep());
+            testCase.results.add(event.getResult());
         }
     }
 
     private void handleTestCaseFinished(TestCaseFinished event) {
 
-        List<PickleTag> tags = event.testCase.getTags();
+        List<String> tags = event.getTestCase().getTags();
         List<String> requirementIds = tags
                 .stream()
-                .map(PickleTag::getName)
                 .filter(tagName -> tagName.startsWith("@JIRA_"))
                 .map(tagName -> tagName.replaceAll("^@JIRA_", "AltID_"))
                 .collect(Collectors.toList());
         
         List<String> customTags = tags
                 .stream()
-                .map(PickleTag::getName)
                 .filter(tagName -> !tagName.startsWith("@JIRA_"))
                 .map(tagName -> tagName.replaceAll("^@", ""))
                 .collect(Collectors.toList());
@@ -151,9 +137,9 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         testCase.addListToElement(doc, root, "tags", "tag", customTags);
 
         if (testCase.steps.isEmpty()) {
-            testCase.handleEmptyTestCase(doc, root, event.result);
+            testCase.handleEmptyTestCase(doc, root, event.getResult());
         } else {
-            testCase.addTestCaseElement(doc, root, event.result, requirementIds);
+            testCase.addTestCaseElement(doc, root, event.getResult(), requirementIds);
         }
     }
 
@@ -201,12 +187,6 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         }
         element.setAttribute(attribute, String.valueOf(++value));
     }
-
-    @Override
-    public void setStrict(boolean strict) {
-        TestCase.treatConditionallySkippedAsFailure = strict;
-    }
-
     private static class TestCase {
         private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         private static final TestSourcesModel testSources = new TestSourcesModel();
@@ -215,17 +195,16 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             NUMBER_FORMAT.applyPattern("0.######");
         }
 
-        private TestCase(cucumber.api.TestCase testCase) {
+        private TestCase(io.cucumber.plugin.event.TestCase testCase) {
             this.testCase = testCase;
         }
 
         static String currentFeatureFile;
         static String previousTestCaseName;
         static int exampleNumber;
-        static boolean treatConditionallySkippedAsFailure = false;
         final List<PickleStepTestStep> steps = new ArrayList<PickleStepTestStep>();
         final List<Result> results = new ArrayList<Result>();
-        private final cucumber.api.TestCase testCase;
+        private final io.cucumber.plugin.event.TestCase testCase;
 
         private Element createElement(Document doc) {
             return doc.createElement("testcase");
@@ -236,7 +215,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
             tc.setAttribute("name", calculateElementName(testCase));
         }
 
-        private String calculateElementName(cucumber.api.TestCase testCase) {
+        private String calculateElementName(io.cucumber.plugin.event.TestCase testCase) {
             String testCaseName = testCase.getName();
             if (testCaseName.equals(previousTestCaseName)) {
                 return Utils.getUniqueTestNameForScenarioExample(testCaseName, ++exampleNumber);
@@ -254,21 +233,17 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
 
             addStepAndResultListing(sb);
             Element child;
-            if (result.is(Result.Type.FAILED)) {
+            if (result.getStatus().is(Status.FAILED)) {
                 addStackTrace(sb, result);
-                child = createElementWithMessage(doc, sb, "failure", result.getErrorMessage());
-            } else if (result.is(Result.Type.AMBIGUOUS)) {
+                child = createElementWithMessage(doc, sb, "failure", result.getError().getMessage());
+            } else if (result.getStatus().is(Status.AMBIGUOUS)) {
                 addStackTrace(sb, result);
-                child = createElementWithMessage(doc, sb, "failure", result.getErrorMessage());
-            } else if (result.is(Result.Type.PENDING) || result.is(Result.Type.UNDEFINED)) {
-                if (treatConditionallySkippedAsFailure) {
-                    child = createElementWithMessage(doc, sb, "failure", "The scenario has pending or undefined step(s)");
-                } else {
-                    child = createElement(doc, sb, "skipped");
-                }
-            } else if (result.is(Result.Type.SKIPPED) && result.getError() != null) {
+                child = createElementWithMessage(doc, sb, "failure", result.getError().getMessage());
+            } else if (result.getStatus().is(Status.PENDING) || result.getStatus().is(Status.UNDEFINED)) {
+                child = createElementWithMessage(doc, sb, "failure", "The scenario has pending or undefined step(s)");
+            } else if (result.getStatus().is(Status.SKIPPED) && result.getError() != null) {
                 addStackTrace(sb, result);
-                child = createElementWithMessage(doc, sb, "skipped", result.getErrorMessage());
+                child = createElementWithMessage(doc, sb, "skipped", result.getError().getMessage());
             } else {
                 child = createElement(doc, sb, "system-out");
             }
@@ -279,7 +254,7 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         public void handleEmptyTestCase(Document doc, Element tc, Result result) {
             tc.setAttribute("time", calculateTotalDurationString(result));
 
-            String resultType = treatConditionallySkippedAsFailure ? "failure" : "skipped";
+            String resultType = "failure" ;
             Element child = createElementWithMessage(doc, new StringBuilder(), resultType, "The scenario has no steps");
 
             tc.appendChild(child);
@@ -297,7 +272,8 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
         }
         
         private String calculateTotalDurationString(Result result) {
-            return NUMBER_FORMAT.format(((double) result.getDuration()) / 1000000000);
+            // time here is in nanoSeconds
+            return NUMBER_FORMAT.format((double)result.getDuration().getNano()/1000000000);
         }
 
         private void addStepAndResultListing(StringBuilder sb) {
@@ -305,9 +281,9 @@ public final class ZephyrXMLFormatter implements EventListener, StrictAware {
                 int length = sb.length();
                 String resultStatus = "not executed";
                 if (i < results.size()) {
-                    resultStatus = results.get(i).getStatus().lowerCaseName();
+                    resultStatus = results.get(i).getStatus().name().toLowerCase(ROOT);
                 }
-                sb.append(getKeywordFromSource(steps.get(i).getStepLine()) + steps.get(i).getStepText());
+                sb.append(getKeywordFromSource(steps.get(i).getStep().getLine()) + steps.get(i).getStep().getText());
                 do {
                     sb.append(".");
                 } while (sb.length() - length < 76);

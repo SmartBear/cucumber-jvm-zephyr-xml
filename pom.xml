@@ -19,7 +19,7 @@
         <project.Automatic-Module-Name>io.cucumber.zephyr</project.Automatic-Module-Name>
         <java.version>1.8</java.version>
         <junit.version>4.13</junit.version>
-        <cucumber.version>4.2.0</cucumber.version>
+        <cucumber.version>6.11.0</cucumber.version>
     </properties>
 
     <scm>
