@@ -12,3 +12,12 @@ Feature: Belly
     Given I have 42 cukes in my belly
     When I wait 1 hour
     Then my belly should growl
+
+  @JIRA_XYZ-5
+  Scenario: some cakes 2
+    Given I have 23 cakes in my belly
+    When I long 5 hour
+    Then my chest should fill
+
+  @JIRA_XYZ-6
+  Scenario: some cakes 3
