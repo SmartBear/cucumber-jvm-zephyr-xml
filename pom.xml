@@ -11,7 +11,7 @@
     The MAJOR.MINOR.PATCH version should be the same as cucumber.version below.
     Use a 4th digit to track additional patch versions for this plugin.
     -->
-    <version>16.11.0.0</version>
+    <version>6.11.0.0</version>
     <packaging>jar</packaging>
     <name>Zephyr XML formatter for Cucumber</name>
 
