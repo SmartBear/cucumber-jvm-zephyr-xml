@@ -45,3 +45,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [milanverma]:         https://github.com/milanverma
 [pv-smartbear]:       https://github.com/davidjgoss
 
+## [6.11.0] - 2023-08-21
+
+### Added
+
+* First release!
+
+<!-- Releases -->
+[6.11.0]:      https://github.com/SmartBear/cucumber-jvm-zephyr-xml/tree/v6.11.0
+
+<!-- Contributors -->
+[geetanshu-smartbear]:   https://github.com/geetanshu-smartbear
