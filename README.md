@@ -15,12 +15,6 @@ validation errors for all users using one of the validation schemas above.
 
 For this reason this plugin is a fork of the `JUnitXmlFormatter`. It has been forked from [Cucumber-JVM 4.2.6](https://github.com/cucumber/cucumber-jvm/blob/main/CHANGELOG.md#426-2019-03-06).
 
-**Warning**: This plugin has not been tested against later versions of Cucumber-JVM
-and is **unlikely** to be compatible with versions `5.x` and `6.x`.
-
-Until this is fixed, users of this plugin will **not** be able to use recent versions
-of Cucumber-JVM.
-
 ## Custom `<requirements>` element
 
 Any tags in the feature file starting with `@JIRA_` will be outputted to the XML.
@@ -79,7 +73,7 @@ Add the dependency to your pom.xml:
 <dependency>
     <groupId>io.cucumber</groupId>
     <artifactId>zephyr-xml-formatter</artifactId>
-    <version>4.2.0.2</version>
+    <version>6.11.0.0</version>
 </dependency>
 ```
 
@@ -99,10 +93,16 @@ This plugin is maintained by the SmartBear Zephyr team.
 * Update the version number in `pom.xml`.
 * Update `CHANGELOG.md` to reflect the changes since the previous release.
 * Commit your files.
+* Tag the `master` branch with the version number (e.g. `vX.Y.Z`).
+* Create the release branch in the form `release/vX.Y.Z` to automatically publish.
 
-Contact somebody fro the Cucumber Open core team to get access to secrets.
+### Manual Publish
 
-    make docker-run-with-secrets
-    make release
+Contact somebody from the Cucumber Open core team to get access to secrets.
+
+```bash
+make docker-run-with-secrets
+make release
+```
 
 This should tag the git repository and upload artefacts to Maven Central.
