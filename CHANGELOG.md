@@ -7,19 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ----
 ## [Unreleased]
 
-## 4.2.0.2 - 2020-28-10
+## [6.11.0.1] - 2023-08-25
+
+### Added
+
+* Enable compatibility with Cucumber-JVM 6.x
+
+### Fixed
+
+* Update `junit` dependency to v4.13.1 
+
+## [4.2.0.2] - 2020-12-17
 
 ### Added
 
 * Support new <tags> feature, so that non-jira @tags are placed into <tags> node
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ## [4.2.0.1] - 2020-02-12
 
@@ -35,24 +37,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * First release!
 
 <!-- Releases -->
-[Unreleased]: https://github.com/SmartBear/cucumber-jvm-zephyr-xml/compare/v4.2.0.2...master
+[Unreleased]: https://github.com/SmartBear/cucumber-jvm-zephyr-xml/compare/v6.11.0.1...master
+[6.11.0.1]:   https://github.com/SmartBear/cucumber-jvm-zephyr-xml/compare/v4.2.0.2...v6.11.0.1
 [4.2.0.2]:    https://github.com/SmartBear/cucumber-jvm-zephyr-xml/compare/v4.2.0.1...v4.2.0.2
 [4.2.0.1]:    https://github.com/SmartBear/cucumber-jvm-zephyr-xml/compare/v4.2.0...v4.2.0.1
 [4.2.0]:      https://github.com/SmartBear/cucumber-jvm-zephyr-xml/tree/v4.2.0
 
 <!-- Contributors in alphabetical order -->
-[aslakhellesoy]:      https://github.com/aslakhellesoy
-[milanverma]:         https://github.com/milanverma
-[pv-smartbear]:       https://github.com/davidjgoss
-
-## [6.11.0] - 2023-08-21
-
-### Added
-
-* First release!
-
-<!-- Releases -->
-[6.11.0]:      https://github.com/SmartBear/cucumber-jvm-zephyr-xml/tree/v6.11.0
-
-<!-- Contributors -->
+[aslakhellesoy]:         https://github.com/aslakhellesoy
 [geetanshu-smartbear]:   https://github.com/geetanshu-smartbear
+[milanverma]:            https://github.com/milanverma
+[pv-smartbear]:          https://github.com/davidjgoss
