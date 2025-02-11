@@ -9,7 +9,6 @@ import io.cucumber.plugin.event.TestSourceRead;
 import java.util.*;
 
 import static io.cucumber.messages.types.SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN;
-import static java.util.stream.Collectors.toList;
 
 final class TestSourcesModel {
     private final Map<String, TestSourceRead> pathToReadEventMap = new HashMap<>();
@@ -76,7 +75,7 @@ final class TestSourcesModel {
                 .build();
         Source sourceFromSc = new Source(path, source, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
 
-        List<Envelope> envelopes = parser.parse(Envelope.of(sourceFromSc)).collect(toList());
+        List<Envelope> envelopes = parser.parse(Envelope.of(sourceFromSc)).toList();
 
         Optional<GherkinDocument> gherkinDocument = Optional.empty();
         for (Envelope envelope : envelopes) {
@@ -87,7 +86,7 @@ final class TestSourcesModel {
         pathToAstMap.put(path, gherkinDocument);
         Map<Long, AstNode> nodeMap = new HashMap<>();
         AstNode currentParent = new AstNode(gherkinDocument.flatMap(GherkinDocument::getFeature), null);
-        List<FeatureChild> featureChildren = gherkinDocument.flatMap(GherkinDocument::getFeature).map(Feature::getChildren).orElse(Collections.emptyList());
+        List<FeatureChild> featureChildren = gherkinDocument.flatMap(GherkinDocument::getFeature).map(Feature::getChildren).orElse(List.of());
         for (FeatureChild child : featureChildren) {
             processFeatureDefinition(nodeMap, child, currentParent);
         }
@@ -136,33 +135,24 @@ final class TestSourcesModel {
 
     private void processScenarioOutlineExamples(Map<Long, AstNode> nodeMap, Scenario scenarioOutline, AstNode parent) {
         for (Examples examples : scenarioOutline.getExamples()) {
+            Optional<TableRow> tableHeader = examples.getTableHeader();
+            if (tableHeader.isEmpty()) {
+                continue;
+            }
             AstNode examplesNode = new AstNode(examples, parent);
-            TableRow headerRow = examples.getTableHeader().get();
+            TableRow headerRow = tableHeader.get();
             AstNode headerNode = new AstNode(headerRow, examplesNode);
             nodeMap.put(headerRow.getLocation().getLine(), headerNode);
             for (int i = 0; i < examples.getTableBody().size(); ++i) {
                 TableRow examplesRow = examples.getTableBody().get(i);
-                Object rowNode = new ExamplesRowWrapperNode(examplesRow, i);
+                Object rowNode = new ExamplesRowWrapperNode(i);
                 AstNode expandedScenarioNode = new AstNode(rowNode, examplesNode);
                 nodeMap.put(examplesRow.getLocation().getLine(), expandedScenarioNode);
             }
         }
     }
 
-    static class ExamplesRowWrapperNode {
-        final int bodyRowIndex;
-        ExamplesRowWrapperNode(Object examplesRow, int bodyRowIndex) {
-            this.bodyRowIndex = bodyRowIndex;
-        }
-    }
+    record ExamplesRowWrapperNode(int bodyRowIndex) { }
 
-    static class AstNode {
-        final Object node;
-        final AstNode parent;
-
-        AstNode(Object node, AstNode parent) {
-            this.node = node;
-            this.parent = parent;
-        }
-    }
+    record AstNode(Object node, TestSourcesModel.AstNode parent) { }
 }

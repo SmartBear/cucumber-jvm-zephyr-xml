@@ -39,36 +39,11 @@ public final class ZephyrXMLFormatter implements EventListener {
     private TestCase testCase;
     private Element root;
 
-    private EventHandler<TestSourceRead> sourceReadHandler = new EventHandler<TestSourceRead>() {
-        @Override
-        public void receive(TestSourceRead event) {
-            handleTestSourceRead(event);
-        }
-    };
-    private EventHandler<TestCaseStarted> caseStartedHandler = new EventHandler<TestCaseStarted>() {
-        @Override
-        public void receive(TestCaseStarted event) {
-            handleTestCaseStarted(event);
-        }
-    };
-    private EventHandler<TestStepFinished> stepFinishedHandler = new EventHandler<TestStepFinished>() {
-        @Override
-        public void receive(TestStepFinished event) {
-            handleTestStepFinished(event);
-        }
-    };
-    private EventHandler<TestCaseFinished> caseFinishedHandler = new EventHandler<TestCaseFinished>() {
-        @Override
-        public void receive(TestCaseFinished event) {
-            handleTestCaseFinished(event);
-        }
-    };
-    private EventHandler<TestRunFinished> runFinishedHandler = new EventHandler<TestRunFinished>() {
-        @Override
-        public void receive(TestRunFinished event) {
-            finishReport();
-        }
-    };
+    private final EventHandler<TestSourceRead> sourceReadHandler = this::handleTestSourceRead;
+    private final EventHandler<TestCaseStarted> caseStartedHandler = this::handleTestCaseStarted;
+    private final EventHandler<TestStepFinished> stepFinishedHandler = this::handleTestStepFinished;
+    private final EventHandler<TestCaseFinished> caseFinishedHandler = this::handleTestCaseFinished;
+    private final EventHandler<TestRunFinished> runFinishedHandler = event -> finishReport();
 
     public ZephyrXMLFormatter(URL out) throws IOException {
         this.out = new OutputStreamWriter(new URLOutputStream(out));
@@ -105,7 +80,7 @@ public final class ZephyrXMLFormatter implements EventListener {
         }
         testCase = new TestCase(event.getTestCase());
         root = testCase.createElement(doc);
-        testCase.writeElement(doc, root);
+        testCase.writeElement(root);
         rootElement.appendChild(root);
 
         increaseAttributeValue(rootElement, "tests");
@@ -139,7 +114,7 @@ public final class ZephyrXMLFormatter implements EventListener {
         if (testCase.steps.isEmpty()) {
             testCase.handleEmptyTestCase(doc, root, event.getResult());
         } else {
-            testCase.addTestCaseElement(doc, root, event.getResult(), requirementIds);
+            testCase.addTestCaseElement(doc, root, event.getResult());
         }
     }
 
@@ -150,8 +125,8 @@ public final class ZephyrXMLFormatter implements EventListener {
             rootElement.setAttribute("failures", String.valueOf(rootElement.getElementsByTagName("failure").getLength()));
             rootElement.setAttribute("skipped", String.valueOf(rootElement.getElementsByTagName("skipped").getLength()));
             rootElement.setAttribute("time", sumTimes(rootElement.getElementsByTagName("testcase")));
-            TransformerFactory transfac = TransformerFactory.newInstance();
-            Transformer trans = transfac.newTransformer();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer trans = transformerFactory.newTransformer();
             trans.setOutputProperty(OutputKeys.INDENT, "yes");
             StreamResult result = new StreamResult(out);
             DOMSource source = new DOMSource(doc);
@@ -169,9 +144,7 @@ public final class ZephyrXMLFormatter implements EventListener {
                 double testCaseTime =
                         Double.parseDouble(testCaseNodes.item(i).getAttributes().getNamedItem("time").getNodeValue());
                 totalDurationSecondsForAllTimes += testCaseTime;
-            } catch (NumberFormatException e) {
-                throw new CucumberException(e);
-            } catch (NullPointerException e) {
+            } catch (NumberFormatException | NullPointerException e) {
                 throw new CucumberException(e);
             }
         }
@@ -187,6 +160,7 @@ public final class ZephyrXMLFormatter implements EventListener {
         }
         element.setAttribute(attribute, String.valueOf(++value));
     }
+
     private static class TestCase {
         private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         private static final TestSourcesModel testSources = new TestSourcesModel();
@@ -195,22 +169,23 @@ public final class ZephyrXMLFormatter implements EventListener {
             NUMBER_FORMAT.applyPattern("0.######");
         }
 
+        private static String currentFeatureFile;
+        private static String previousTestCaseName;
+        private static int exampleNumber;
+
+        private final List<PickleStepTestStep> steps = new ArrayList<>();
+        private final List<Result> results = new ArrayList<>();
+        private final io.cucumber.plugin.event.TestCase testCase;
+
         private TestCase(io.cucumber.plugin.event.TestCase testCase) {
             this.testCase = testCase;
         }
-
-        static String currentFeatureFile;
-        static String previousTestCaseName;
-        static int exampleNumber;
-        final List<PickleStepTestStep> steps = new ArrayList<PickleStepTestStep>();
-        final List<Result> results = new ArrayList<Result>();
-        private final io.cucumber.plugin.event.TestCase testCase;
 
         private Element createElement(Document doc) {
             return doc.createElement("testcase");
         }
 
-        private void writeElement(Document doc, Element tc) {
+        private void writeElement(Element tc) {
             tc.setAttribute("classname", testSources.getFeatureName(currentFeatureFile));
             tc.setAttribute("name", calculateElementName(testCase));
         }
@@ -226,7 +201,7 @@ public final class ZephyrXMLFormatter implements EventListener {
             }
         }
 
-        public void addTestCaseElement(Document doc, Element tc, Result result, List<String> requirementIds) {
+        public void addTestCaseElement(Document doc, Element tc, Result result) {
             tc.setAttribute("time", calculateTotalDurationString(result));
 
             StringBuilder sb = new StringBuilder();
@@ -267,7 +242,7 @@ public final class ZephyrXMLFormatter implements EventListener {
             values.forEach(value -> {
                 Element childElement = doc.createElement(childElementName);
                 parentElement.appendChild(childElement);
-                childElement.setTextContent(value.toString());
+                childElement.setTextContent(value);
             });
         }
         
@@ -283,7 +258,7 @@ public final class ZephyrXMLFormatter implements EventListener {
                 if (i < results.size()) {
                     resultStatus = results.get(i).getStatus().name().toLowerCase(ROOT);
                 }
-                sb.append(getKeywordFromSource(steps.get(i).getStep().getLine()) + steps.get(i).getStep().getText());
+                sb.append(getKeywordFromSource(steps.get(i).getStep().getLine())).append(steps.get(i).getStep().getText());
                 do {
                     sb.append(".");
                 } while (sb.length() - length < 76);
@@ -300,7 +275,7 @@ public final class ZephyrXMLFormatter implements EventListener {
             sb.append("\nStackTrace:\n");
             StringWriter sw = new StringWriter();
             failed.getError().printStackTrace(new PrintWriter(sw));
-            sb.append(sw.toString());
+            sb.append(sw);
         }
 
         private Element createElementWithMessage(Document doc, StringBuilder sb, String elementType, String message) {
@@ -314,9 +289,8 @@ public final class ZephyrXMLFormatter implements EventListener {
             // the createCDATASection method seems to convert "\n" to "\r\n" on Windows, in case
             // data originally contains "\r\n" line separators the result becomes "\r\r\n", which
             // are displayed as double line breaks.
-            // TODO Java 7 PR #1147: Inlined System.lineSeparator()
-            String systemLineSeperator = System.getProperty("line.separator");
-            child.appendChild(doc.createCDATASection(sb.toString().replace(systemLineSeperator, "\n")));
+            String systemLineSeparator = System.lineSeparator();
+            child.appendChild(doc.createCDATASection(sb.toString().replace(systemLineSeparator, "\n")));
             return child;
         }
 

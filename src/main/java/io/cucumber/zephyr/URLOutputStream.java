@@ -7,24 +7,17 @@ import java.util.Collections;
 import java.util.Map;
 
 public class URLOutputStream extends OutputStream {
-    private final URL url;
-    private final String method;
-    private final int expectedResponseCode;
     private final OutputStream out;
-    private final HttpURLConnection urlConnection;
 
     public URLOutputStream(URL url) throws IOException {
-        this(url, "PUT", Collections.<String, String>emptyMap(), 200);
+        this(url, "PUT", Collections.emptyMap());
     }
-    public URLOutputStream(URL url, String method, Map<String, String> headers, int expectedResponseCode) throws IOException {
-        this.url = url;
-        this.method = method;
-        this.expectedResponseCode = expectedResponseCode;
+    public URLOutputStream(URL url, String method, Map<String, String> headers) throws IOException {
+        HttpURLConnection urlConnection;
         if (url.getProtocol().equals("file")) {
             File file = new File(url.getFile());
             ensureParentDirExists(file);
             out = new FileOutputStream(file);
-            urlConnection = null;
         } else if (url.getProtocol().startsWith("http")) {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(method);
