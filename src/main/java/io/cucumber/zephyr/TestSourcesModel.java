@@ -24,7 +24,7 @@ final class TestSourcesModel {
             parseGherkinSource(path);
         }
         if (pathToAstMap.containsKey(path)) {
-            return pathToAstMap.get(path).flatMap(GherkinDocument::getFeature).get();
+            return pathToAstMap.get(path).flatMap(GherkinDocument::getFeature).orElse(null);
         }
         return null;
     }
@@ -33,6 +33,9 @@ final class TestSourcesModel {
         Feature feature = getFeature(uri);
         if (feature != null) {
             TestSourceRead event = getTestSourceReadEvent(uri);
+            if (event == null || event.getSource() == null) {
+                return "";
+            }
             String trimmedSourceLine = event.getSource().split("\n")[stepLine - 1].trim();
             GherkinDialect dialect = new GherkinDialectProvider(feature.getLanguage()).getDefaultDialect();
             for (String keyword : dialect.getStepKeywords()) {
@@ -75,7 +78,7 @@ final class TestSourcesModel {
 
         List<Envelope> envelopes = parser.parse(Envelope.of(sourceFromSc)).collect(toList());
 
-        Optional<GherkinDocument> gherkinDocument = null;
+        Optional<GherkinDocument> gherkinDocument = Optional.empty();
         for (Envelope envelope : envelopes) {
             if (envelope.getGherkinDocument().isPresent()) {
                 gherkinDocument = envelope.getGherkinDocument();
@@ -83,8 +86,9 @@ final class TestSourcesModel {
         }
         pathToAstMap.put(path, gherkinDocument);
         Map<Long, AstNode> nodeMap = new HashMap<>();
-        AstNode currentParent = new AstNode(gherkinDocument.get().getFeature(), null);
-        for (FeatureChild child : gherkinDocument.get().getFeature().get().getChildren()) {
+        AstNode currentParent = new AstNode(gherkinDocument.flatMap(GherkinDocument::getFeature), null);
+        List<FeatureChild> featureChildren = gherkinDocument.flatMap(GherkinDocument::getFeature).map(Feature::getChildren).orElse(Collections.emptyList());
+        for (FeatureChild child : featureChildren) {
             processFeatureDefinition(nodeMap, child, currentParent);
         }
     }
