@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ----
 ## [Unreleased]
 
+
+## [7.21.1] - 2025-02-12
+
+### Added
+
+* Enable compatibility with Cucumber-JVM 7.x
+
+### Fixed
+
+* Update `cucumber-parent` dependency to v4.2.0
+* Update `java` version to 17
+
+
 ## [6.11.0.1] - 2023-08-25
 
 ### Added
