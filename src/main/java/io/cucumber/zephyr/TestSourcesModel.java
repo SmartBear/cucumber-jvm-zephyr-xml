@@ -73,9 +73,9 @@ final class TestSourcesModel {
                 .includePickles(false)
                 .idGenerator(() -> UUID.randomUUID().toString())
                 .build();
-        Source sourceFromSc = new Source(path, source, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
+        Source gherkinSource = new Source(path, source, TEXT_X_CUCUMBER_GHERKIN_PLAIN);
 
-        List<Envelope> envelopes = parser.parse(Envelope.of(sourceFromSc)).toList();
+        List<Envelope> envelopes = parser.parse(Envelope.of(gherkinSource)).toList();
 
         Optional<GherkinDocument> gherkinDocument = Optional.empty();
         for (Envelope envelope : envelopes) {
