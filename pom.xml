@@ -15,6 +15,20 @@
     <packaging>jar</packaging>
     <name>Zephyr XML formatter for Cucumber</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <source>17</source>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <properties>
         <project.Automatic-Module-Name>io.cucumber.zephyr</project.Automatic-Module-Name>
         <java.version>17</java.version>
