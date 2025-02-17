@@ -1,6 +1,5 @@
-package io.cucumber.zephyr;
+package com.smartbear;
 
-import java.io.OutputStreamWriter;
 import io.cucumber.core.exception.CucumberException;
 import io.cucumber.plugin.EventListener;
 import io.cucumber.plugin.event.*;
@@ -16,11 +15,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

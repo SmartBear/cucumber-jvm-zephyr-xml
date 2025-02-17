@@ -1,4 +1,4 @@
-package io.cucumber.zephyr;
+package com.smartbear;
 
 public class Belly {
     public void eat(int cukes) {

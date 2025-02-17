@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.cucumber</groupId>
+    <artifactId>zephyr-xml-formatter</artifactId>
+
+    <version>6.11.0.3</version>
+    <packaging>pom</packaging>
+    <name>Zephyr XML formatter for Cucumber</name>
+    <distributionManagement>
+        <relocation>
+            <groupId>com.smartbear</groupId>
+            <artifactId>zephyr-xml-formatter</artifactId>
+            <version>7.21.1.1</version>
+            <message>This artifact has moved to com.smartbear:zephyr-xml-formatter. Please update your dependencies.</message>
+        </relocation>
+    </distributionManagement>
+</project>
