@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
-## [7.21.1] - 2025-02-12
+## [7.21.1.1] - 2025-02-12
 
 ### Added
 
+* Relocate package from `io.cucumber.zephyr` to `com.smartbear`
 * Enable compatibility with Cucumber-JVM 7.x
 
 ### Fixed

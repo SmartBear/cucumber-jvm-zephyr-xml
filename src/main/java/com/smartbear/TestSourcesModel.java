@@ -1,8 +1,8 @@
-package io.cucumber.zephyr;
+package com.smartbear;
 
-import io.cucumber.gherkin.GherkinParser;
 import io.cucumber.gherkin.GherkinDialect;
 import io.cucumber.gherkin.GherkinDialectProvider;
+import io.cucumber.gherkin.GherkinParser;
 import io.cucumber.messages.types.*;
 import io.cucumber.plugin.event.TestSourceRead;
 
@@ -154,5 +154,5 @@ final class TestSourcesModel {
 
     record ExamplesRowWrapperNode(int bodyRowIndex) { }
 
-    record AstNode(Object node, TestSourcesModel.AstNode parent) { }
+    record AstNode(Object node, AstNode parent) { }
 }

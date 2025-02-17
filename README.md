@@ -71,9 +71,9 @@ Add the dependency to your pom.xml:
 
 ```xml
 <dependency>
-    <groupId>io.cucumber</groupId>
+    <groupId>com.smartbear</groupId>
     <artifactId>zephyr-xml-formatter</artifactId>
-    <version>6.11.0.0</version>
+    <version>7.21.1.1</version>
 </dependency>
 ```
 
@@ -81,7 +81,7 @@ Add the following to your JUnit class:
 
 ```java
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"io.cucumber.zephyr.ZephyrXMLFormatter:target/zephyr.xml"})
+@CucumberOptions(plugin = {"com.smartbear.ZephyrXMLFormatter:target/zephyr.xml"})
 ```
 
 ## Maintenance
