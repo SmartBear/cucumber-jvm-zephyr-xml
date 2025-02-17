@@ -41,7 +41,7 @@
         <connection>scm:git:git://github.com/SmartBear/cucumber-jvm-zephyr-xml.git</connection>
         <developerConnection>scm:git:git@github.com:SmartBear/cucumber-jvm-zephyr-xml.git</developerConnection>
         <url>git://github.com/SmartBear/cucumber-jvm-zephyr-xml.git</url>
-        <tag>v7.21.1</tag>
+        <tag>v7.21.1.1</tag>
   </scm>
 
     <dependencies>
